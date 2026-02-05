@@ -1,4 +1,3 @@
-import UIKit
 import Foundation
 import PlaygroundSupport
 
@@ -89,7 +88,7 @@ import PlaygroundSupport
 func isPalindrome(input: String) -> Bool {
     // Step 1: Validate empty input to skip all the process
     guard !input.isEmpty else { return true }
-    guard input.count >= 1 && input.count <= Int(2 * pow(10.0, 5.0)) else { return false }
+    guard input.count >= 1 && input.count <= Int(2 * 1e5) else { return false } // Usage of numeric literals
     // Step 2: Clean the string to lowercase and filter alpanumeric characters
     let cleaned = input
         .lowercased()
@@ -160,5 +159,5 @@ assert(isPalindromeWithTwoPointer(input: " "), "Empty string should be a palindr
 assert(!isPalindromeWithTwoPointer(input: "12345"), "12345 should not be palindrome")
 assert(isPalindromeWithTwoPointer(input: "#%&/$"), "#%&/$ should be palindrome")
 
-print("All tests passed ✅")
+print("All valid_palindrome tests passed (12) ✅")
 PlaygroundPage.current.needsIndefiniteExecution = false
