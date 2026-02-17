@@ -8,16 +8,19 @@ Prepare for iOS/Software Engineer technical interviews
 ## 📚 Topics
 ```
 swift-dsa/
-├── algorithms/
-│   ├── strings/
+├── data_structures/
 │   ├── arrays/
 │   ├── hashmaps/
+│   ├── ...
+├── algorithms/
+│   ├── sorting/
+│   ├── binary_search/
 	 ...
 ├── ios-concepts/
-│   ├── networking/
+│   ├── testing/
 │   ├── concurrency/
 │   ├── ui/
-│   └── testing/
+│   └── ...
 ├── mock-interviews/
 └── README.md
 ```
