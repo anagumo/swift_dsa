@@ -1,11 +1,12 @@
 //: [Previous](@previous)
+import Foundation
 
 /**
  The problem:
  Implement a node of a Singly Linked List and a function to print all elements
  
  ![Linked List](linked-list.png)
- **/
+ */
 
 class Node<T> {
     var value: T
@@ -114,5 +115,21 @@ list.removeFirst()
 list.prepend(4)
 list.printAll() // prints 4 -> 7 -> 2 -> nil
 list.node(at: 1)?.value
+
+// Size of the node in Stack
+let stackSize = MemoryLayout.size(ofValue: list.node(at: 0))
+print("\nHead en stack: \(stackSize) bytes")
+// Size of the node in Heap
+let heapSize = malloc_size(Unmanaged.passRetained(list.node(at: 0) ?? Node(0)).toOpaque())
+print("Head en heap: \(heapSize) bytes")
+// Node references
+let nodeReferences = CFGetRetainCount(list.node(at: 0))
+print("Head references: \(nodeReferences)")
+/**
+ Retain count
+ 1. `node` <- variable local
+ 2. Unmanaged.passRetained(node) <- malloc_size, passRetained increments count
+ 3. Playground  runtime <-  Playground to display objects in sidebar
+ */
 
 //: [Next](@next)
