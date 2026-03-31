@@ -84,58 +84,87 @@ class Node<T> {
 
 struct MemoryAware<T> {
     private var head: Node<T>?
+    // Create a reference to the last node to get O(1) in an append
     private var tail: Node<T>?
     
     mutating func append(_ value: T) {
-        let newNode = Node(value)
+        let node = Node(value)
         
         guard head != nil else {
-            head = newNode
-            tail = newNode
+            // If the list is empty the new node is the head and tail of the list
+            head = node
+            tail = node
             return
         }
         
-        tail?.next = newNode
-        tail = newNode
+        // The node that tail is pointing, its next node must point to the new node
+        tail?.next = node
+        // Move the pointer to the new node, now the last node
+        tail = node
     }
     
     mutating func prepend(_ value: T) {
-        let newNode = Node(value)
+        let node = Node(value)
         
         guard let top = head else {
-            head = newNode
+            // If the list is empty, both head and tail must point to the new node
+            head = node
+            tail = node // Edge case found: set a tail when the list is empty
             return
         }
-        
-        newNode.next = top
-        head = newNode
+        // If the list is not empty
+        // The new node's next node must point to the old head
+        node.next = top
+        // Move the head pointer to the new node, now the first node
+        head = node
     }
     
-    func remove(at index: Int) -> T? {
+    mutating func remove(at index: Int) -> T? {
+        guard index >= 0, head != nil else { return nil }
+        
+        // If the head is going to be removed
+        if index == 0 {
+            let top = head
+            head = top?.next
+            if head == nil { tail = nil }
+            return top?.value
+        }
+        
+        // If the list has more than one element and we need to remove in the middle or at the end
         var currentIndex = 0
+        // Create a temporal reference to the prev node to delete a node at index n
+        var prevNode: Node<T>?
         var currentNode = head
-        var prevNode = currentNode
-        while let _ = currentNode {
-            guard currentIndex != index else {
-                prevNode?.next = currentNode?.next
-                return currentNode?.value
+        
+        while let node = currentNode {
+            if currentIndex == index {
+                // The prev's next node must point to the current node's next node
+                prevNode?.next = node.next
+                // Make sure the tail points to the prev node if the last node is removed
+                if node.next == nil {
+                    tail = prevNode
+                }
+                return node.value
             }
+            
+            // Move the pointer to the next node
             currentIndex += 1
             prevNode = currentNode
-            currentNode = currentNode?.next
+            currentNode = node.next
         }
+        
         return nil
     }
     
     func iterate() -> String {
-        var count = 0
         var currentNode = head
         var str = ""
+        
         while let node = currentNode {
             let connector = node.next != nil ? " -> " : " -> nil"
             str += "\(node.value)\(connector)"
+            // Move the currentNode pointer to its next node to iterate the list
             currentNode = currentNode?.next
-            count += 1
         }
         
         return str
@@ -164,7 +193,7 @@ struct MemoryAware<T> {
  Make a sistematic debuggin, understand the state of your data
  
  Take notes if needed:
- 
+
  ```swift
  var memoryAware: MemoryAware<Int> = MemoryAware()
  memoryAware.append(3)
@@ -184,8 +213,9 @@ var memoryAware: MemoryAware<Int> = MemoryAware()
 memoryAware.append(3)
 memoryAware.append(7)
 memoryAware.prepend(2)
-assert(memoryAware.remove(at: 1) == 3, "Test 1 failed")
-memoryAware.iterate()
-assert(memoryAware.iterate() == "2 -> 7 -> nil", "Test 2 failed")
+assert(memoryAware.remove(at: 0) == 2, "Test 1 failed")
+assert(memoryAware.iterate() == "3 -> 7 -> nil", "Test 2 failed")
+assert(memoryAware.remove(at: 1) == 7, "Test 2 failed")
 assert(memoryAware.remove(at: 2) == nil, "Test 3 failed")
+memoryAware.append(11)
 print("✅ All tests passed!")
