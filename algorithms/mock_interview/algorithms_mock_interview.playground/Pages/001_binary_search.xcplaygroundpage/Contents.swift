@@ -79,7 +79,7 @@ func search<T: Comparable>(_ nums: [T], target: T) -> Int {
     // Iterate the list
     while low <= high {
         // Calculate the middle
-        var mid = (low + high) / 2
+        let mid = (low + high) / 2
         if nums[mid] == target {
             // The target is in the middle
             return mid

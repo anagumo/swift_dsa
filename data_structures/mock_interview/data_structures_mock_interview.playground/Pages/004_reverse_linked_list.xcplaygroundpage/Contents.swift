@@ -86,9 +86,9 @@ struct ReverseLinkedList<T> {
         
         var prev: ListNode<T>?
         var current = head
-        var next: ListNode<T>?
         
         while let _ = current {
+            var next: ListNode<T>?
             next = current?.next
             current?.next = prev
             prev = current
