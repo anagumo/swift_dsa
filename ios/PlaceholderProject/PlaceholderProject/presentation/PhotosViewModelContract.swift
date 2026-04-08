@@ -1,0 +1,4 @@
+
+protocol PhotosViewModelContract {
+    func load()
+}
