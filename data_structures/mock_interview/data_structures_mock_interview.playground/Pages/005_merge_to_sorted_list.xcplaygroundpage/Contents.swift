@@ -32,18 +32,15 @@ import Foundation
  
  Design the algorithm
 - Sketch your solution
- 1. Create variables for `tail` to remeber the last node, `current` and `next` to store nodes' history
- 2. If the lists are empy return empty, otherwise return the full one
- 3. Iterate the current elements of both `list1` and `list2`, until one of them are `nil`
- 4. Save on `next` the next nodes of both `list1` and `list2`
- 5. Compare the `current` node of `list1` and the `list2`
- 6. The lowest node next should be equal to the greatest node
- 7. If `head` is `nil`, head is equal to the lowest node
- 8.  Then the `tail` is equeal to the greatest node
- 9. If `head` is not `nil`, we are going to focus in the `tail`, so repeat the step 6
- 10. Then`tail.next` node should be equal to the lowest node
- 11. Repeat the step 8
- 13. Return the head of new sorted linked list
+ 1. If the lists are empy return empty, otherwise return the full one
+ 2. Create variables for `tail` to remeber the last node, `n1` and `n2` to move pointers on both lists
+ 3. Create a dummy node to avoid validate a `nil` head, `tail` is equal to this dummy
+ 4. Iterate the current elements of both `list1` and `list2`, until one of its current elements is `nil`
+ 5. Compare `n1` and `n2`, `tail.next` is equal to the `min`
+ 6. Move the pointer to the `min`, to the next node
+ 7. If one pointer is `nil`, link the not nil node to the `tail`
+ 8. Head now is equal to dummy next node
+ 9. Return head
  
  - Triggers: Two sorted list
  - Dsa: Linked List
@@ -76,68 +73,31 @@ class ListNode<T> {
 }
 
 struct SortedLinkedList<T: Comparable> {
-    private var head: ListNode<T>?
-    private var tail: ListNode<T>?
     
     mutating func merge(_ list1: ListNode<T>?, _ list2: ListNode<T>?) -> ListNode<T>? {
-        // Validate edge case before iterate
-        if list1 == nil && list2 == nil {
-            return nil
-        } else if list1 != nil && list2 == nil {
-            return list1
-        } else if list1 == nil && list2 != nil {
-            return list2
-        }
+        var head = ListNode(value: 0 as! T)
+        var tail: ListNode<T>? = head
+        var ptr1: ListNode<T>? = list1
+        var ptr2: ListNode<T>? = list2
         
-        var node1 = list1
-        var node2 = list2
-        
-        // Iterate both list until one of them equal nil
-        while node1 != nil || node2 != nil {
-            var nextL1 = node1?.next
-            var nextL2 = node2?.next
-            
-            if let node1, let node2, node1.value <= node2.value {
-                // Node 1 is lower than Node 2
-                node1.next = node2
-                
-                if head == nil {
-                    head = node1
-                } else {
-                    tail?.next = node1
-                }
-                
-                tail = node2
+        while let node1 = ptr1, let node2 = ptr2 {
+            if node1.value <= node2.value {
+                // Node 1 is the min
+                tail?.next = ptr1
+                ptr1 = ptr1?.next
             } else {
-                // Node 2 is lower than Node 1
-                node2?.next = node1
-                
-                if head == nil {
-                    head = node2
-                } else {
-                    // When list2 ends first
-                    if node2 == nil {
-                        tail?.next = node1
-                    } else {
-                        tail?.next = node2
-                    }
-                }
-                
-                // When list1 ends first
-                if node1 == nil {
-                    tail = node2
-                } else {
-                    tail = node1
-                }
+                // Node 2 is the min
+                tail?.next = ptr2
+                ptr2 = ptr2?.next
             }
-            
-            // Move the pointer to the next nodes
-            node1 = nextL1
-            node2 = nextL2
+            // Move the tail pointer
+            tail = tail?.next
         }
         
-        tail = nil
-        return head
+        // If one of the list ends first, otherwise set tail.next to nil
+        tail?.next = ptr1 ?? ptr2
+        // Return the next element since dummy data
+        return head.next
     }
 }
 
@@ -171,13 +131,13 @@ var node4 = ListNode(value: 5)
 node3.next = node4
 list2.next = node3 // [1,3,5]
 var list3 = ListNode(value: 1)
-list3.next = ListNode(value: 2)
+list3.next = ListNode(value: 2) // [1,2]
 
 let result = sortedLinkedList.merge(list1, list2)
 assert(result?.value == 1, "Test 1 failed")
 let result2 = sortedLinkedList.merge(nil, list3)
-assert(result2?.value == 1, "Test 1 failed")
-assert(sortedLinkedList.merge(nil, nil) == nil, "Test 1 failed")
+assert(result2?.value == 1, "Test 2 failed")
+assert(sortedLinkedList.merge(nil, nil) == nil, "Test 3 failed")
 
 print("✅ All tests passed!")
 
