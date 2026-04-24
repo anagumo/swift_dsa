@@ -40,7 +40,7 @@ import Foundation
  - Trade-offs
  4. Should I priorize velocity over memory?
  
- Sketch solution
+ Design the algorithm
  - Dsa selected: Stack
  - Trigger: Queue/Stack
  - Pseudocode:
