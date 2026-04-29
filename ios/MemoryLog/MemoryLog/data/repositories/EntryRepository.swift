@@ -35,7 +35,7 @@ final class EntryRepository: EntryRepositoryContract {
         }
     }
     
-    private func saveContext() {
+    private func saveContext() throws {
         guard modelContext.hasChanges else {
             debugPrint("There is no changes to apply in BBDD")
             return
@@ -45,14 +45,20 @@ final class EntryRepository: EntryRepositoryContract {
             try modelContext.save()
         } catch {
             debugPrint("Unexpected error saving BBDD context: \(error)")
+            throw EntryError.saveFailed
         }
     }
     
     func insert(_ entry: Entry) throws {
-        modelContext.insert(
-            EntryDomainToEntity().map(entity: entry)
-        )
-        saveContext()
+        do {
+            modelContext.insert(
+                EntryDomainToEntity().map(entity: entry)
+            )
+            try saveContext()
+        } catch {
+            debugPrint("Unexpected error inserting an entry in BBDD: \(error)")
+            throw EntryError.insertFailed
+        }
     }
     
     func fetchAll(sortType: SortType = .none) throws -> [Entry] {
@@ -76,11 +82,10 @@ final class EntryRepository: EntryRepositoryContract {
             let domainList = entityList.map { entity in
                 EntryEntityToDomain().map(entity)
             }
-            
             return domainList
         } catch {
             debugPrint("Entry entities not found in BBDD")
-            return []
+            throw EntryError.fetchFailed
         }
     }
 }
