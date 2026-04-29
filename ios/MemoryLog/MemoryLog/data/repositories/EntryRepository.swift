@@ -61,20 +61,25 @@ final class EntryRepository: EntryRepositoryContract {
         }
     }
     
-    func fetch(sortType: SortType = .none) throws -> [Entry] {
-        let descriptor: FetchDescriptor<EntryEntity>
+    func fetch(query: String?, sortType: SortType?) throws -> [Entry] {
+        var descriptor = FetchDescriptor<EntryEntity>()
         
+        // Filter entries by title
+        if let query {
+            descriptor.predicate = #Predicate { $0.title == query }
+        }
+        
+        // Sort entries by category or date
         switch sortType {
-        case .none:
-            descriptor = FetchDescriptor<EntryEntity>()
-        case .date:
-            descriptor = FetchDescriptor<EntryEntity>(
-                sortBy: [SortDescriptor(\.date, order: .reverse)]
-            )
         case .category:
             descriptor = FetchDescriptor<EntryEntity>(
                 sortBy: [SortDescriptor(\.category.rawValue, comparator: .lexical)]
             )
+        case .date:
+            descriptor = FetchDescriptor<EntryEntity>(
+                sortBy: [SortDescriptor(\.date, order: .reverse)]
+            )
+        case .none: break
         }
         
         do {
@@ -82,6 +87,7 @@ final class EntryRepository: EntryRepositoryContract {
             let domainList = entityList.map { entity in
                 EntryEntityToDomain().map(entity)
             }
+            
             return domainList
         } catch {
             debugPrint("Entry entities not found in BBDD")
