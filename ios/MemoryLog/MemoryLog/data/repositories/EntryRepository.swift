@@ -61,7 +61,7 @@ final class EntryRepository: EntryRepositoryContract {
         }
     }
     
-    func fetchAll(sortType: SortType = .none) throws -> [Entry] {
+    func fetch(sortType: SortType = .none) throws -> [Entry] {
         let descriptor: FetchDescriptor<EntryEntity>
         
         switch sortType {
