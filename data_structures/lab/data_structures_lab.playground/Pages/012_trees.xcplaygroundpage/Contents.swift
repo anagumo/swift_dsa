@@ -107,18 +107,18 @@ struct BST<T: Comparable> {
             }
             
             if node.value < currentValue {
-                if current?.left == nil {
+                if current?.left != nil {
+                    current = current?.left
+                } else {
                     current?.left = node
                     break
-                } else {
-                    current = current?.left
                 }
             } else {
-                if current?.right == nil {
+                if current?.right != nil {
+                    current = current?.right
+                } else {
                     current?.right = node
                     break
-                } else {
-                    current = current?.right
                 }
             }
         }
@@ -129,20 +129,20 @@ struct BST<T: Comparable> {
         var current = root
         
         while let currentValue = current?.value {
-            if node.value == currentValue {
-                return true
-            } else if node.value < currentValue {
-                if current?.left == nil {
-                    return false
-                } else {
+            if node.value < currentValue {
+                if current?.left != nil {
                     current = current?.left
+                } else {
+                    return false
+                }
+            } else if node.value > currentValue {
+                if current?.right != nil {
+                    current = current?.right
+                } else {
+                    return false
                 }
             } else {
-                if current?.right == nil {
-                    return false
-                } else {
-                    current = current?.right
-                }
+                return true
             }
         }
         
