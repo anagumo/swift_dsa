@@ -1,6 +1,6 @@
 
 protocol GetEntriesUseCaseContract {
-    /// Executes a one bussines action to get sorted entries
+    /// Executes a one bussines action to get filtered and sorted entries
     /// - Parameters:
     ///   - query: Represents how filter the data
     ///   - sortType: Represents how sort the data
